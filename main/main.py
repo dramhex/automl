@@ -17,6 +17,9 @@ def main():
     
     # Load the data
     data = data_loader.load_data()
+    print("Data loaded successfully.")
+    print(data.head())  # Display the first few rows of the data
+    print(data.describe())  # Display a summary of the data
     
     if data.empty:
         print("No data loaded. Exiting.")
