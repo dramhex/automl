@@ -1,18 +1,10 @@
 import visualizer, loader, learn, gui
 
-# Load csv file
-# describe
-# ask for settings
-# visualize
-# type of regression
-# learn
-# show results
-
 print("Starting the main program...")
 
 def main():
     # Initialize the DataLoader with a file path
-    file_path = "file_path"  # Replace with your actual file path
+    file_path = "path"  # Replace with your actual file path
     data_loader = loader.DataLoader(file_path)
     
     # Load the data
@@ -29,12 +21,15 @@ def main():
     visualizer_instance = visualizer.DataVisualizer(data)
     
     # Ask for columns to plot
-    x_column = input(f"Available columns: {data_loader.get_columns()}\nEnter X column: ")
+    columns = data_loader.get_columns()
+    print(f"Available columns: {columns}")
     y_column = input("Enter Y column: ")
-    
-    # Plot the data
-    visualizer_instance.plot_data(x_column, y_column)
-    
+    x_columns_input = input("Enter X columns (comma-separated for multiple): ")
+    x_columns = [col.strip() for col in x_columns_input.split(",") if col.strip()]
+
+    # Plot each X vs Y
+    visualizer_instance.plot_data(x_columns, y_column)
+
     '''
     # Learn from the data (placeholder for learning functionality)
     learn.learn_from_data(data, x_column, y_column)
