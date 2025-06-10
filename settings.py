@@ -25,7 +25,7 @@ def get_columns(data_frame: pd.DataFrame) -> list:
     return columns
 
 def set_features(columns: list) -> list:
-    '''Let user chose one or more features from the columns of the dataset'''
+    #Let user chose one or more features from the columns of the dataset
     while True:
         print(f'\nAvailable features: {columns}')
         user_input = input('Enter one or more features (separated with commas): ').strip()
