@@ -100,7 +100,7 @@ def plot_3d(df: pd.DataFrame, features: list, target: str, model, dataset_name: 
     ax.set_ylabel(features[1])
     ax.set_zlabel(target)
     ax.set_title('Multiple Linear Regression (2 features)')
+    
     plt.tight_layout()
-    if dataset_name:
-        save_plot(fig, dataset_name, features, target, model_type)
     plt.show()
+    return fig
