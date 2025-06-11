@@ -63,75 +63,44 @@ def save_plot(fig, dataset_name: str, features: list, target: str, model_type: s
     print(f"Plot saved in '{plot_filename}'")
     plt.close(fig)
 
-def plot_regression_result(df: pd.DataFrame, features: list, target: str, model, model_type: str, dataset_name):
+def plot_3d(df: pd.DataFrame, features: list, target: str, model, dataset_name: str = None, model_type: str = None):
     """
-    Affiche la droite (2D) ou le plan (3D) de régression selon le modèle.
+    Affiche un scatter 3D et le plan de régression pour une régression multiple à 2 features.
     """
-    if model_type == "simple_linear" and len(features) == 1:
-        x = df[features[0]].values
-        y = df[target].values
+    x1 = df[features[0]].values
+    x2 = df[features[1]].values
+    y = df[target].values
 
-        #Undersampling if needed
-        if len(x) > max_points:
-            idx = np.random.choice(len(x), max_points, replace=False)
-            x_plot = x[idx]
-            y_plot = y[idx]
-        else:
-            x_plot = x
-            y_plot = y
-
-        plt.figure(figsize=(8, 6))
-        plt.scatter(x_plot, y_plot, color='blue', label='Data')
-        sort_idx = np.argsort(x)
-        x_sorted = x[sort_idx]
-        y_pred = model.coef_[0] * x_sorted + model.intercept_
-        plt.plot(x_sorted, y_pred, color='red', label='Regression line')
-        plt.xlabel(features[0])
-        plt.ylabel(target)
-        plt.title('Simple Linear Regression')
-        plt.xlim(x.min(), x.max())
-        plt.ylim(y.min(), y.max())
-        plt.legend()
-        if dataset_name:
-            fig = plt.gcf()
-            save_plot(fig, dataset_name, features, target, model_type)
-        plt.show()
-
-    elif model_type == "multiple_linear" and len(features) == 2:
-        x1 = df[features[0]]
-        x2 = df[features[1]]
-        y = df[target]
-
-        #Undersampling if needed
-        if len(x1) > max_points*4:
-            idx = np.random.choice(len(x1), max_points, replace=False)
-            x1_plot = x1[idx]
-            x2_plot = x2[idx]
-            y_plot = y[idx]
-        else:
-            x1_plot = x1
-            x2_plot = x2
-            y_plot = y
-
-        fig = plt.figure(figsize=(10, 7))
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(x1_plot, x2_plot, y_plot, color='blue', label='Data')
-        # Plan de régression
-        x1_grid, x2_grid = np.meshgrid(
-            np.linspace(x1.min(), x1.max(), 20),
-            np.linspace(x2.min(), x2.max(), 20)
-        )
-        X_grid = np.c_[x1_grid.ravel(), x2_grid.ravel()]
-        y_pred = model.predict(X_grid).reshape(x1_grid.shape)
-        ax.plot_surface(x1_grid, x2_grid, y_pred, color='red', alpha=0.5)
-        ax.set_xlabel(features[0])
-        ax.set_ylabel(features[1])
-        ax.set_zlabel(target)
-        ax.set_title('Multiple Linear Regression (2 features)')
-        if dataset_name:
-            fig = plt.gcf()
-            save_plot(fig, dataset_name, features, target, model_type)
-        plt.show()
-
+    # Undersampling
+    max_points = 100
+    if len(x1) > max_points:
+        idx = np.random.choice(len(x1), max_points, replace=False)
+        x1_plot = x1[idx]
+        x2_plot = x2[idx]
+        y_plot = y[idx]
     else:
-        print("Visualisation de la régression non supportée pour ce cas.")
+        x1_plot = x1
+        x2_plot = x2
+        y_plot = y
+
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x1_plot, x2_plot, y_plot, color='royalblue', s=20, alpha=0.7, label='Data')
+
+    # Plan de régression
+    grid_points = 20
+    x1_grid, x2_grid = np.meshgrid(
+        np.linspace(x1.min(), x1.max(), grid_points),
+        np.linspace(x2.min(), x2.max(), grid_points)
+    )
+    X_grid = np.c_[x1_grid.ravel(), x2_grid.ravel()]
+    y_pred = model.predict(X_grid).reshape(x1_grid.shape)
+    ax.plot_surface(x1_grid, x2_grid, y_pred, color='crimson', alpha=0.4, edgecolor='none')
+    ax.set_xlabel(features[0])
+    ax.set_ylabel(features[1])
+    ax.set_zlabel(target)
+    ax.set_title('Multiple Linear Regression (2 features)')
+    plt.tight_layout()
+    if dataset_name:
+        save_plot(fig, dataset_name, features, target, model_type)
+    plt.show()
