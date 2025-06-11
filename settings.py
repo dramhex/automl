@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import time
 
 def select_model() -> str:
     print("Select a learning model:")
@@ -42,6 +43,10 @@ def set_features(columns_by_type: dict, model: str) -> list:
         for idx, col in enumerate(columns, 1):
             print(f"{idx}. {col}")
 
+        if model == "multiple_linear":
+            print("You must select at least TWO features for multiple linear regression.")
+        else:
+            print("You can select multiple features (each will be compared independently to the target for simple regression).")
         user_input = input('Enter one or more feature numbers (separated by spaces): ').strip()
         indices = user_input.split()
 
@@ -49,20 +54,27 @@ def set_features(columns_by_type: dict, model: str) -> list:
             selected_indices = [int(index) - 1 for index in indices]
         except ValueError:
             print("Invalid input. Please enter numbers only.")
+            time.sleep(2)
+
             continue
 
         valid_features = [columns[i] for i in selected_indices if 0 <= i < len(columns)]
         
         if not valid_features:
             print('No valid features entered. Please try again.')
-            continue
+            time.sleep(2)
 
-        if model == "simple_linear" and len(valid_features) != 1:
-            print('Simple Linear Regression requires exactly one feature.')
             continue
 
         if len(valid_features) >= len(columns):
             print('You must leave at least one column for the target.')
+            time.sleep(2)
+
+            continue
+
+        if model == "multiple_linear" and len(valid_features) < 2:
+            print("Multiple linear regression requires at least TWO features. Please try again.")
+            time.sleep(2)
             continue
 
         return valid_features

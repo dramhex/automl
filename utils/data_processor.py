@@ -5,7 +5,7 @@ from settings import (
     select_model
 )
 from utils.visualization import plot_scatter, save_plot, plot_regression_result
-from models.linear_regression import train_simple_linear, train_multiple_linear
+from models.linear_regression import train_models
 
 def process_dataset(file_path: str):
     df = load_csv(file_path)
@@ -25,20 +25,11 @@ def process_dataset(file_path: str):
     print(f'Selected features: {features}')
     print(f'Selected target: {target}')
 
-    if model_type == "simple_linear":
-        trained_model = train_simple_linear(df, features, target)
-    elif model_type == "multiple_linear":
-        trained_model = train_multiple_linear(df, features, target)
-    
-    visualize_and_save(df, features, target, dataset_name)
+    models = train_models(df, features, target, model_type)
 
-    plot_regression_result(df, features, target, trained_model, model_type)
-
-def visualize_and_save(df, features, target, dataset_name):
+    # Visualisation
     user_input = input('Do you want to visualize the data? (yes/no): ').strip().lower()
     if user_input == 'yes' and len(features) > 0:
-        fig, _ = plot_scatter(df, features, target)
-        save_plot(fig, dataset_name, features, target)
-        print(f"Plots saved in 'plots/{dataset_name}' directory.")
-    else:
-        print("No features selected for visualization.")
+        fig, _ = plot_scatter(df, features, target, models=models)
+        save_plot(fig, dataset_name, features, target, model_type=model_type)
+        
