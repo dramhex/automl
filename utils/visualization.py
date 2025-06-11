@@ -8,14 +8,17 @@ from mpl_toolkits.mplot3d import Axes3D
 max_points = 100 #For undersampling, depends on your GPU tho
 
 def plot_scatter(df: pd.DataFrame, features: list, target: str, models: list):
-    '''Makes scatter plots for every feature vs target'''
+    '''Makes scatter plots for every feature vs target, 3 plots per row max'''
+    max_cols = 3
     num_plots = len(features)
-    fig, axes = plt.subplots(nrows=1, ncols=num_plots, figsize=(5 * num_plots, 5))
+    ncols = min(num_plots, max_cols)
+    nrows = (num_plots + max_cols - 1) // max_cols
 
-    if num_plots == 1:
-        axes = [axes]
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(5 * ncols, 5 * nrows))
+    axes = np.array(axes).reshape(-1)  # Flatten in case of single row/col
 
     for i, feature in enumerate(features):
+        ax = axes[i]
         x = df[feature].values
         y = df[target].values
         # Undersampling
@@ -25,21 +28,25 @@ def plot_scatter(df: pd.DataFrame, features: list, target: str, models: list):
             y = y[idx]
 
         data_plot = pd.DataFrame({feature: x, target: y})
-        sns.scatterplot(data=data_plot, x=feature, y=target, ax=axes[i], color='royalblue', s=30, edgecolor=None)
-        axes[i].set_xlabel(feature)
-        axes[i].set_ylabel(target)
-        axes[i].set_title(f'Scatter Plot of {feature} vs {target}')
-    
+        sns.scatterplot(data=data_plot, x=feature, y=target, ax=ax, color='royalblue', s=30, edgecolor=None)
+        ax.set_xlabel(feature)
+        ax.set_ylabel(target, fontsize=3)
+        ax.set_title(f'Scatter Plot of {feature} vs {target}')
+
         if models and len(models) > i and models[i] is not None:
             model = models[i]
             x_sorted = np.sort(x)
             y_pred = model.predict(x_sorted.reshape(-1, 1))
-            axes[i].plot(x_sorted, y_pred, color='crimson', label='Regression line')
-            axes[i].legend()
+            ax.plot(x_sorted, y_pred, color='crimson', label='Regression line')
+            ax.legend()
+
+    # Hide unused subplots if any
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
 
     plt.tight_layout()
     plt.show()
-    return fig, axes
+    return fig
 
 def save_plot(fig, dataset_name: str, features: list, target: str, model_type: str = None):
     # Ajoute le type de modèle dans le chemin si précisé
@@ -100,7 +107,7 @@ def plot_3d(df: pd.DataFrame, features: list, target: str, model, dataset_name: 
     ax.set_ylabel(features[1])
     ax.set_zlabel(target)
     ax.set_title('Multiple Linear Regression (2 features)')
-    
+
     plt.tight_layout()
     plt.show()
     return fig
