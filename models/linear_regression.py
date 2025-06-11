@@ -4,7 +4,7 @@ import pandas as pd
 
 def train_simple_linear(df: pd.DataFrame, features: list, target: str):
     X = df[features].values.reshape(-1, 1)
-    y = df[target].values
+    y = df[target].values  
     model = LinearRegression()
     model.fit(X, y)
     return model
