@@ -1,6 +1,4 @@
-# 🧠 Reflex
-
-# ⚙️ AutoML Regression Tool
+# 🧠 Reflex ML Tool
 
 A **minimalist yet scalable tool** for automatic training of regression models from a `.csv` file, with integrated visualization.
 
