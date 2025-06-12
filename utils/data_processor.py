@@ -5,7 +5,7 @@ from settings import (
     select_model
 )
 from utils.visualization import plot_scatter, plot_3d, save_plot 
-from models.linear_regression import train_models
+from models.regression import train_models
 
 def process_dataset(file_path: str):
     df = load_csv(file_path)

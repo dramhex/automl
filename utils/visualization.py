@@ -36,7 +36,7 @@ def plot_scatter(df: pd.DataFrame, features: list, target: str, models: list):
         if models and len(models) > i and models[i] is not None:
             model = models[i]
             x_sorted = np.sort(x)
-            y_pred = model.predict(x_sorted.reshape(-1, 1))
+            y_pred = model.model.predict(x_sorted.reshape(-1, 1))
             ax.plot(x_sorted, y_pred, color='crimson', label='Regression line')
             ax.legend()
 
@@ -101,7 +101,7 @@ def plot_3d(df: pd.DataFrame, features: list, target: str, model):
         np.linspace(x2.min(), x2.max(), grid_points)
     )
     X_grid = np.c_[x1_grid.ravel(), x2_grid.ravel()]
-    y_pred = model.predict(X_grid).reshape(x1_grid.shape)
+    y_pred = model.mode.predict(X_grid).reshape(x1_grid.shape)
     ax.plot_surface(x1_grid, x2_grid, y_pred, color='crimson', alpha=0.4, edgecolor='none')
     ax.set_xlabel(features[0])
     ax.set_ylabel(features[1])
