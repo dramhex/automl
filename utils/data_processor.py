@@ -25,7 +25,7 @@ def process_dataset(file_path: str):
     print(f'Selected features: {features}')
     print(f'Selected target: {target}')
 
-    models = train_models(df, features, target, model_type)
+    models, splits = train_models(df, features, target, model_type)
 
     # Visualisation
     if model_type == "simple_linear":

@@ -70,7 +70,7 @@ def save_plot(fig, dataset_name: str, features: list, target: str, model_type: s
     print(f"Plot saved in '{plot_filename}'")
     plt.close(fig)
 
-def plot_3d(df: pd.DataFrame, features: list, target: str, model, dataset_name: str = None, model_type: str = None):
+def plot_3d(df: pd.DataFrame, features: list, target: str, model):
     """
     Affiche un scatter 3D et le plan de régression pour une régression multiple à 2 features.
     """
