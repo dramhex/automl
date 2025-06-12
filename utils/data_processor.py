@@ -16,29 +16,12 @@ def process_dataset(file_path: str):
 
     model_type = settings.select_model()
 
-    
-
     target = settings.set_target()
     features = settings.set_features()
 
     print(f'Selected features: {features}')
     print(f'Selected target: {target}')
 
-    settings.display_settings
+    settings.display_settings()
 
     models, splits = train_models(df, features, target, model_type)
-
-    # Visualisation
-    if model_type == "linear_regression":
-        user_input = input('Do you want to visualize the data? (yes/no): ').strip().lower()
-        if user_input == 'yes' and len(features) > 0:
-            fig = plot_scatter(df, features, target, models=models)
-            save_plot(fig, dataset_name, features, target, model_type=model_type)
-    elif model_type == "multiple_linear" and len(features) == 2:
-        user_input = input('Do you want to visualize the 3D regression? (yes/no): ').strip().lower()
-        if user_input == 'yes':
-            # models[0] is the only model for multiple linear regression
-            fig = plot_3d(df, features, target, models[0])
-            save_plot(fig, dataset_name, features, target, model_type=model_type)
-    elif model_type == "multiple_linear" and len(features) > 2:
-        print("Visualization is not supported for multiple linear regression with more than 2 features.")
