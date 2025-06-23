@@ -2,24 +2,18 @@ import pandas as pd
 import numpy as np
 import time
 
-models_names = ["simple_linear", "multiple_linear", "polynomial"]
-m = len(models_names)
-
 def select_model() -> str:
     print("Select a learning model:")
     print("1. Simple Linear Regression")
     print("2. Multiple Linear Regression")
-    print("3. Polynomial Regression")
-    try:
-        choice = int(input("Enter the number of the model you want to use: ").strip())
-    except ValueError:
-        print(f"Enter a number")
-        select_model()
-    if choice not in range (1, m):
-        print(f"Enter a number between 1 and {m}")
-        select_model()
+    choice = input("Enter the number of the model you want to use: ").strip()
+    if choice == "1":
+        return "simple_linear"
+    elif choice == "2":
+        return "multiple_linear"
     else:
-        return models_names[choice-1]
+        print("Invalid choice. Please try again.")
+        return select_model()
 
 def get_columns(df: pd.DataFrame) -> dict:
     continuous_columns = df.select_dtypes(include=[np.number]).columns.tolist()
